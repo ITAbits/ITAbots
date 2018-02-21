@@ -4,6 +4,10 @@ var logger = require('winston');
 
 const bot = new Discord.Client();
 
+const sql = require('sqlite');
+sql.open('./handles.sqlite');
+
+
 const fetch = require('./fetch').init();
 
 require('./util/eventLoader')(bot);
