@@ -16,7 +16,6 @@ fetch.updateUpcoming = function() {
 	const upcoming = fetch.upcoming;
 	upcoming.length = 0;
 	// alerts.reset_alerts();
-	console.log('oi');
 	
 	fetchers.forEach((fetcher) => {
 		
