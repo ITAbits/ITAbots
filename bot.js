@@ -4,6 +4,8 @@ var logger = require('winston');
 
 const bot = new Discord.Client();
 
+const fetch = require('./fetch').init();
+
 require('./util/eventLoader')(bot);
 
 // bot.on('ready', () => {

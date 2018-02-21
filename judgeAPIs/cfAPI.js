@@ -1,4 +1,4 @@
-const logger = require('../logger');
+// const logger = require('../logger');
 const http = require('http');
 const EventEmitter = require('events');
 const schedule = require('node-schedule');
@@ -11,14 +11,14 @@ cf_api.call_cf_api = function(name, args, retry_times) {
 	const emitter = new EventEmitter();
 
 	emitter.on('error', (extra_info) => {
-		logger.error('Call to ' + name + ' failed. ' + extra_info);
+		// logger.error('Call to ' + name + ' failed. ' + extra_info);
 	});
 
 	let try_;
 	try_= function(times) {
-		logger.info('CF request: ' + 'http://codeforces.com/api/' + name + '?' + qs.stringify(args));
+		// logger.info('CF request: ' + 'http://codeforces.com/api/' + name + '?' + qs.stringify(args));
 		http.get('http://codeforces.com/api/' + name + '?' + qs.stringify(args), (res) => {
-			if (res.statusCode !== 200) {
+		if (res.statusCode !== 200) {
 				res.resume();
 				if(times > 0) try_(times - 1);
 				else emitter.emit('error', 'Status Code: ' + res.statusCode);
@@ -32,7 +32,7 @@ cf_api.call_cf_api = function(name, args, retry_times) {
 			res.on('end', () => {
 				let obj;
 				try {
-					logger.info(data.substr(0, 1000));
+					// logger.info(data.substr(0, 1000));
 					obj = JSON.parse(data);
 					if (obj.status == "FAILED") {
 						if(times > 0) try_(times - 1);
