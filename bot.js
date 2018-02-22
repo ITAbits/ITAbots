@@ -32,3 +32,5 @@ var prefix = '!';
 // });
 
 bot.login(process.env.BOT_TOKEN);
+
+module.exports = {} = bot;
