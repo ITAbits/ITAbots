@@ -1,4 +1,5 @@
 // const logger = require('../logger');
+const logger = require('winston');
 const https = require('https');
 const EventEmitter = require('events');
 
@@ -23,7 +24,7 @@ module.exports = {
 			}
 
 			if (error) {
-				// logger.error(error.message);
+				logger.error(error.message);
 				res.resume(); // free
 				return;
 			}
@@ -62,7 +63,7 @@ module.exports = {
 				}
 			});
 		}).on('error', (e) => {
-			// logger.error('Request Error CSAcademy\n' + e.message);
+			logger.error('Request Error CSAcademy\n' + e.message);
 		});
 
 		return emitter;

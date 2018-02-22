@@ -1,4 +1,4 @@
-// const logger = require('../logger');
+const logger = require('winston');
 const jsdom = require('jsdom')
 const EventEmitter = require('events');
 const moment = require('moment-timezone');
@@ -12,7 +12,7 @@ module.exports = {
 			["http://code.jquery.com/jquery.js"],
 			(err, window) => {
 				if (err) {
-					// logger.error("Failed on CodeChef.", err);
+					logger.error("Failed on CodeChef.", err);
 					return;
 				}
 				const $ = window.$
@@ -24,9 +24,9 @@ module.exports = {
 						const _start = moment.tz(contest.filter('.start_date').text(), 'DD MMM YYYY HH:mm:ss', 'Asia/Colombo');
 						const _end = moment.tz(contest.filter('.end_date').text(), 'DD MMM YYYY HH:mm:ss', 'Asia/Colombo');
 						if (!_start.isValid() || !_end.isValid()) {
-							// logger.error('Codechef invalid dates for ' + x.text);
-							// logger.error("\t Start: " + _start);
-							// logger.error("\t End: " + _end);
+							logger.error('Codechef invalid dates for ' + x.text);
+							logger.error("\t Start: " + _start);
+							logger.error("\t End: " + _end);
 							return;
 						}
 						const start = _start.toDate();

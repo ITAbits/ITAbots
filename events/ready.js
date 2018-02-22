@@ -1,9 +1,11 @@
+const logger = require('winston');
+
 module.exports = client => {
-    console.log("I'm online!");
     try{
         client.user.settings.inlineEmbedMedia = false;
         client.user.settings.inlineAttachmentMedia = false;
+        logger.info("I'm online!");
     } catch (err){
-        console.log("No user found for client!");
+        logger.error("No user found for client!");
     }
 }

@@ -40,7 +40,6 @@ exports.run = function(client, message, args) {
 
         if (validContests <= maxContests) {
             const d = entry.duration / 60;
-            console.log(entry);
             const min = Math.ceil((entry.time.getTime() - Date.now()) / (1000 * 60));
             result += entry.name + ', <' + entry.url  + '> ,' + " (" + Math.floor(d / 60) + "h" + (d % 60 == 0? "" : (d % 60 < 10? "0" : "") + (d % 60).toString())+ ")\nStarts in " +
 					num(min / (60 * 24), 'd ') + num((min / 60) % 24, 'h ') + (min % 60).toString() + "m\n\n";

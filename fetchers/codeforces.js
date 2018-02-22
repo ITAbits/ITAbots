@@ -1,5 +1,6 @@
 "use strict";
 // const logger = require('../logger');
+const logger = require('winston');
 const EventEmitter = require('events');
 const schedule = require('node-schedule');
 const sql = require("sqlite");
@@ -12,12 +13,7 @@ const in_contest_ids = {};
 
 /* Msgs all users in a contest */
 let contest_msg_all = function(msg, contest_id) {
-	// db.low
-	// 	.get('users')
-	// 	.reject((user) => { return !user.notify || user.ignore.codeforces || !in_contest_ids[contest_id].has(user.id); })
-	// 	.map('id')
-	// 	.value()
-	// 	.forEach((id) => { bot.sendSimpleHtml(id, msg); });
+	// ITAbit's contests channel ID. Should put in .env;
 	var channelId = '153561098757341184';
 	let channel;
 	bot.channels.forEach((element) => {
@@ -26,33 +22,13 @@ let contest_msg_all = function(msg, contest_id) {
 		}
 	});
 	channel.send(msg);
+	logger.info("Message sent in contests channel.");
 };
 
 /* Called when ratings are changed */
 let process_final = function(ratings, ev, contest_id) {
 	const mp = new Map();
 	ratings.forEach((r) => mp.set(r.handle.toLowerCase(), r));
-	// db.low
-	// 	.get('users')
-	// 	.reject((user) => { return !user.notify || user.ignore.codeforces || !in_contest_ids[contest_id].has(user.id); })
-	// 	.value()
-	// 	.forEach((user) => {
-	// 		let msg = 'Ratings for ' + html_msg.make_link(ev.name, ev.url) + ' are out!';
-	// 		let rs = []; // ratings for handles from user
-	// 		user.cf_handles.forEach((h) => {
-	// 			if(mp.has(h))
-	// 				rs.push(mp.get(h));
-	// 		});
-	// 		if(rs.length === 0)
-	// 			return;
-	// 		rs.sort((a, b) => a.rank - b.rank);
-	// 		rs.forEach((r) => {
-	// 			let prefix = "";
-	// 			if(r.newRating >= r.oldRating) prefix = "+";
-	// 			msg += '\n\n<b>' + html_msg.escape(r.handle) + '</b>\n' + html_msg.escape(r.oldRating + ' → '+ r.newRating + ' (' + prefix + (r.newRating - r.oldRating) + ')');
-	// 		});
-	// 		bot.sendMessage(user.id, msg, { parse_mode: 'html', disable_web_page_preview: true });
-	// 	});
 	sql.all(`select * from handles`).then(rows => {
 		let msg = 'Ratings for ' + ev.name + ' are out!';
 		let rs = []; // ratings for handles from user
@@ -70,11 +46,10 @@ let process_final = function(ratings, ev, contest_id) {
 			if(r.newRating >= r.oldRating) prefix = "+";
 			msg += '\n\n' + r.handle + '\n' + r.oldRating + ' → '+ r.newRating + ' (' + prefix + (r.newRating - r.oldRating) + ')';
 		});
-		// bot.sendMessage(user.id, msg, { parse_mode: 'html', disable_web_page_preview: true });
 		contest_msg_all(msg, null);
     }).catch((error) => {
-		console.error(error);
-		console.log("Can't acess elements in DB.");
+		logger.error(error);
+		logger.error("Can't acess elements in DB.");
 	});
 };
 
@@ -116,33 +91,22 @@ let prelim_contest_end = function(ev, contest_id) {
 	schedule.scheduleJob(in5d, () => delete in_contest_ids[contest_id] );
 
 	const user_handles = new Set();
-	// db.low
-	// 	.get('users')
-	// 	.map('cf_handles')
-	// 	.value()
-	// 	.forEach((hs) => { if(hs) hs.forEach((h) => user_handles.add(h)); });
 	sql.all(`select * from handles`).then(rows => {
         rows.forEach(element => {
             user_handles.add(element.handle);
         });
     }).catch((error) => {
-		console.error(error);
-		console.log("Can't acess elements in DB.");
+		logger.error(error);
+		logger.error("Can't acess elements in DB.");
 	});
-	// logger.info("Total handle count: " + user_handles.size);
+	logger.info("Total handle count: " + user_handles.size);
 	cfAPI.call_cf_api('contest.standings', {contestId: contest_id, showUnofficial: true}, 5)
 		.on('end', (obj) => {
 			const handles_in_contest = new Set();
 			obj.rows.forEach((row) => row.party.members.forEach((m) => { if(user_handles.has(m.handle)) handles_in_contest.add(m.handle); }));
-			// logger.info("CF contest " + ev.name + " has " + handles_in_contest.size + " participants.");
+			logger.info("CF contest " + ev.name + " has " + handles_in_contest.size + " participants.");
 			if(handles_in_contest.size === 0) return;
 
-			// db.low
-			// 	.get('users')
-			// 	.value()
-			// 	.forEach((user) => {
-			// 		user.cf_handles.forEach((h) => { if(handles_in_contest.has(h)) in_contest_ids[contest_id].add(user.id); });
-			// 	});
 			sql.all(`select * from handles`).then(rows => {
 				rows.forEach(element => {
 					if(handles_in_contest.has(element.handle)) in_contest_ids[contest_id].add(element.id);
@@ -151,7 +115,7 @@ let prelim_contest_end = function(ev, contest_id) {
 				console.error(error);
 				console.log("Can't acess elements in DB.");
 			});
-			// logger.info("CF contest " + ev.name + " has participants from " + in_contest_ids[contest_id].size + " chats.");
+			logger.info("CF contest " + ev.name + " has participants from " + in_contest_ids[contest_id].size + " chats.");
 
 			cfAPI.wait_for_condition_on_api_call('contest.standings', {contestId: contest_id, from: 1, count: 1},
 				/* condition */ (obj) => obj.contest.phase !== 'BEFORE' && obj.contest.phase !== 'CODING',
@@ -190,7 +154,7 @@ module.exports = {
 
 				emitter.emit('end');
 			} catch (e) {
-				// logger.error('Parse Failed Codeforces\n' + e.message);
+				logger.error('Parse Failed Codeforces\n' + e.message);
 			}
 		});
 

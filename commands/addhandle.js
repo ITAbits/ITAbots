@@ -20,8 +20,8 @@ exports.run = function(client, message, args) {
                 sql.run("INSERT INTO handles (id, handle) VALUES (?, ?)", [message.author.id, element.toString()]);
                 message.reply("Seu handle foi adicionado com sucesso!");
             } else {
-                message.reply("Seu handle já está cadastrado!");
-                // sql.run(`UPDATE handles SET points = ${row.points + 1} WHERE userId = ${message.author.id}`);
+                sql.run(`UPDATE handles SET handle = ${element.toString()} WHERE id = ${message.author.id}`);
+                message.reply(`Seu handle foi atualizado para ${element.toString()}!`);
             }
         }).catch(() => {
             console.log('entrou no catch');

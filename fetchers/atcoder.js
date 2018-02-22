@@ -1,4 +1,5 @@
 // const logger = require('../logger');
+const logger = require('winston');
 const jsdom = require('jsdom')
 const EventEmitter = require('events');
 const moment = require('moment-timezone');
@@ -27,7 +28,7 @@ module.exports = {
 			["http://code.jquery.com/jquery.js"],
 			(err, window) => {
 				if (err) {
-					// logger.error("Failed on AtCoder.", err);
+					logger.error("Failed on AtCoder.", err);
 					return;
 				}
 				upcoming.length = 0;
@@ -47,9 +48,9 @@ module.exports = {
 					const duration = row.eq(2).text().split(':'); /* HH:mm */
 					const url = row.eq(1).find('a').attr('href');
 					if(!start.isValid() || !valid(duration)) {
-						// logger.error("AtCoder invalid dates for " + name);
-						// logger.error("\t Start: " + start);
-						// logger.error("\t Duration: " + duration);
+						logger.error("AtCoder invalid dates for " + name);
+						logger.error("\t Start: " + start);
+						logger.error("\t Duration: " + duration);
 						return;
 					}
 					upcoming.push({
