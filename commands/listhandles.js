@@ -7,7 +7,7 @@ exports.run = function(client, message, args) {
 
     sql.all(`select * from handles`).then(rows => {
         rows.forEach(element => {
-            resultTxt = resultTxt.concat(`<@${element.id}>: (${element.handle}); `)
+            resultTxt = resultTxt.concat(`<@${element.id}>: (${element.handle});\n `)
         });
         message.channel.send(resultTxt);
     });
