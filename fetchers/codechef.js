@@ -8,8 +8,6 @@ module.exports = {
 	updateUpcoming: (upcoming) => {
 		const emitter = new EventEmitter();
 
-		return emitter;
-
 		jsdom.env("https://www.codechef.com/contests",
 			["http://code.jquery.com/jquery.js"],
 			(err, window) => {

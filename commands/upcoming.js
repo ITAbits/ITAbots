@@ -25,7 +25,6 @@ exports.run = function(client, message, args) {
     const maxContests = 7;
     let validContests = 0;
     let result = "";
-    console.log('ue');
     console.log(fetch);
     fetch.upcoming.forEach( (entry) => {
         console.log(entry);
@@ -43,7 +42,7 @@ exports.run = function(client, message, args) {
             const d = entry.duration / 60;
             console.log(entry);
             const min = Math.ceil((entry.time.getTime() - Date.now()) / (1000 * 60));
-            result += entry.name + ', ' + entry.url  + ' ,' + " (" + Math.floor(d / 60) + "h" + (d % 60 == 0? "" : (d % 60 < 10? "0" : "") + (d % 60).toString())+ ")\nStarts in " +
+            result += entry.name + ', <' + entry.url  + '> ,' + " (" + Math.floor(d / 60) + "h" + (d % 60 == 0? "" : (d % 60 < 10? "0" : "") + (d % 60).toString())+ ")\nStarts in " +
 					num(min / (60 * 24), 'd ') + num((min / 60) % 24, 'h ') + (min % 60).toString() + "m\n\n";
         }
     });

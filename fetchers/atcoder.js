@@ -21,7 +21,7 @@ module.exports = {
 	name: "atcoder",
 	updateUpcoming: (upcoming) => {
 		const emitter = new EventEmitter();
-		return emitter;
+		// return emitter;
 
 		jsdom.env("https://atcoder.jp/contest",
 			["http://code.jquery.com/jquery.js"],
