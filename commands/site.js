@@ -5,6 +5,6 @@ exports.run = function(client, message, args) {
 
     var idPrecious = '368906096230006785';
    
-    message.channel.send('Estamos a ' + interval + ' dias sem site, mas o <@ '+ idPrecious +'> está trabalhando duro nele!');
+    message.channel.send('Estamos a ' + interval + ' dias sem site, mas o <@'+ idPrecious +'> está trabalhando duro nele!');
 
 }
