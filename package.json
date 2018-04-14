@@ -1,14 +1,14 @@
 {
-  "name": "discordcontestwatcher",
+  "name": "ITAbots",
   "version": "1.0.0",
-  "description": "discord version of bot watcher",
+  "description": "bot do discord",
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ITAbits/discordcontestwatcher.git"
+    "url": "git+https://github.com/ITAbits/ITAbots.git"
   },
   "keywords": [
     "bot",
@@ -18,9 +18,9 @@
   "author": "guima",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ITAbits/discordcontestwatcher/issues"
+    "url": "https://github.com/ITAbits/ITAbots/issues"
   },
-  "homepage": "https://github.com/ITAbits/discordcontestwatcher#readme",
+  "homepage": "https://github.com/ITAbits/ITAbots",
   "dependencies": {
     "discord.js": "^11.3.0",
     "discord.js-commando": "^0.9.0",
