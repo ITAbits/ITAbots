@@ -1,45 +1,48 @@
-const logger = require('winston');
-const EventEmitter = require('events');
-const ical = require('ical');
+// const logger = require('winston')
+const EventEmitter = require('events')
+const ical = require('ical')
 
 module.exports = {
-	name: "topcoder",
-	updateUpcoming: (upcoming) => {
-		const emitter = new EventEmitter();
+  name: 'topcoder',
+  updateUpcoming: (upcoming) => {
+    const emitter = new EventEmitter()
 
-		ical.fromURL(
-			'https://calendar.google.com/calendar/ical/appirio.com_bhga3musitat85mhdrng9035jg%40group.calendar.google.com/public/basic.ics',
-			{},
-			(err, data) => {
-				upcoming.length = 0;
+    ical.fromURL(
+      'https://calendar.google.com/calendar/ical/appirio.com_bhga3musitat85mhdrng9035jg%40group.calendar.google.com/public/basic.ics',
+      {},
+      (err, data) => {
+        if (err) {
+          // TODO: better handle error
+          console.error(err)
+        }
 
-				for (var key in data) {
-					if (!data.hasOwnProperty(key))
-						continue;
-					var el = data[key];
+        upcoming.length = 0
 
-					if (/(SRM|TCO)/g.test(el.summary)) {
-						var entry = {
-							judge: 'topcoder',
-							name: el.summary,
-							url: 'http://topcoder.com/',
-							time: new Date(el.start),
-							duration: (el.end - el.start) / 1000
-						};
+        data.foreach(key => {
+          if (!data.hasOwnProperty(key)) { return }
+          let el = data[key]
 
-						var ending = new Date(entry.time);
-						ending.setSeconds(ending.getSeconds() + entry.duration);
-						if (ending.getTime() >= Date.now())
-							upcoming.push(entry);
-					}
-				}
+          if (/(SRM|TCO)/g.test(el.summary)) {
+            let entry = {
+              judge: 'topcoder',
+              name: el.summary,
+              url: 'http://topcoder.com/',
+              time: new Date(el.start),
+              duration: (el.end - el.start) / 1000
+            }
 
-				upcoming.sort((a, b) => { return a.time - b.time; });
+            let ending = new Date(entry.time)
+            ending.setSeconds(ending.getSeconds() + entry.duration)
+            if (ending.getTime() >= Date.now()) { upcoming.push(entry) }
+          }
+        })
 
-				emitter.emit('end');
-			}
-		);
+        upcoming.sort((a, b) => { return a.time - b.time })
 
-		return emitter;
-	}
-};
+        emitter.emit('end')
+      }
+    )
+
+    return emitter
+  }
+}
