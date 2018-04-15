@@ -45,7 +45,7 @@ module.exports = {
 
 - Armazenar dados
 
-Para criar um novo modelo de armazenamento, basta criar um arquivo `"models/categoria-nomedomodelo"` seguindo os moldes de [`"models/contests-handle"`](./models/contests-handle)
+Para criar um novo modelo de armazenamento, basta criar um arquivo `"models/categoria-nomedomodelo.js"` seguindo os moldes de [`"models/contests-handle.js"`](./models/contests-handle.js)
 
 - Categorias
 
@@ -54,4 +54,9 @@ Se quiser adicionar funcionalidades genericas para uma nova categoria, fazer tud
 - Standard.js
 
 Estamos usando o padrão de código [standard.js](https://standardjs.com/), então antes de dar push cheque se o código está todo no padrao usando `npm run test`
+
+- Documentações relevantes:
+  - [discord.js](https://discordjs.guide/#/)
+  - [mongoose](http://mongoosejs.com/docs/guide.html)
+  - [standardjs](https://standardjs.com/)
 
