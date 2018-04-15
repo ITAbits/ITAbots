@@ -8,7 +8,7 @@ module.exports = {
 		const emitter = new EventEmitter();
 
 		ical.fromURL(
-			'https://calendar.google.com/calendar/ical/appirio.com_bhga3musitat85mhdrng9035jg%40group.calendar.google.com/public/basic.ics', 
+			'https://calendar.google.com/calendar/ical/appirio.com_bhga3musitat85mhdrng9035jg%40group.calendar.google.com/public/basic.ics',
 			{},
 			(err, data) => {
 				upcoming.length = 0;
@@ -34,7 +34,7 @@ module.exports = {
 					}
 				}
 
-				upcoming.sort( (a, b) => { return a.time - b.time; });
+				upcoming.sort((a, b) => { return a.time - b.time; });
 
 				emitter.emit('end');
 			}

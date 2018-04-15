@@ -11,7 +11,7 @@ function isNumeric(string) {
 /* Validate a duration array
 Expected format ['HH', 'mm'];
 */
-function valid(duration){
+function valid(duration) {
 	return duration.length == 2
 		&& isNumeric(duration[0])
 		&& isNumeric(duration[1])
@@ -37,17 +37,17 @@ module.exports = {
 					We gather information of the tables that follow the "Active Contests" and "Upcoming Contests" headers.
 					*/
 				var contests = $(':header:contains("Active Contests"), :header:contains("Upcoming Contests") + div').children('table').children('tbody').children('tr');
-				contests.each(function (){
+				contests.each(function () {
 					const row = $(this).children('td');
 					const name = row.eq(1).find('a').text();
 
 					/* There's always this practice contest */
-					if(name == 'practice contest') return;
+					if (name == 'practice contest') return;
 
 					const start = moment.tz(row.eq(0).find('a').text(), 'YYYY/MM/DD HH:mm', 'Asia/Tokyo');
 					const duration = row.eq(2).text().split(':'); /* HH:mm */
 					const url = row.eq(1).find('a').attr('href');
-					if(!start.isValid() || !valid(duration)) {
+					if (!start.isValid() || !valid(duration)) {
 						logger.error("AtCoder invalid dates for " + name);
 						logger.error("\t Start: " + start);
 						logger.error("\t Duration: " + duration);

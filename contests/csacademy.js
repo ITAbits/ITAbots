@@ -39,7 +39,7 @@ module.exports = {
 				try {
 					let stateJSON = JSON.parse(rawStateJSON);
 					for (contest of stateJSON.state.Contest) {
-						if(!contest.rated) continue;
+						if (!contest.rated) continue;
 
 						var entry = {
 							judge: 'csacademy',
@@ -55,7 +55,7 @@ module.exports = {
 							upcoming.push(entry);
 					}
 
-					upcoming.sort( (a,b) => { return a.time - b.time; });
+					upcoming.sort((a, b) => { return a.time - b.time; });
 
 					emitter.emit('end');
 				} catch (e) {

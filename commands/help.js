@@ -1,11 +1,39 @@
-exports.run = function(client, message, args) {
-    message.channel.send("Hi. I am the bits bot. And these are my commands:\n\n"
-    + '!help: shows this message again (and again (and again( and ...)));\n\n'
-    + '!upcoming: shows the next contests avaible on the next week on the most popular online judges\n\n'
-    + '!addhandle <handle>: adds your codeforces handle to my database.\n\n'
-    + '!listhandles: show all handles in my database\n\n'
-    + '!site: remember precious boy to work on our site\n\n'
-    + 'If someone in my database participates in a codeforces contest, I will put the results in the contest channel!\n\n'
-    + '#BoraBits!\n'
-    );
-}
+const { prefix } = require('config');
+
+module.exports = {
+	name: 'help',
+	description: 'Mostra essa mensagem de novo (e de novo ( e de novo ( e ... ) ) )',
+	aliases: ['commands', 'ajuda', 'comandos'],
+	usage: '<command name>',
+	execute(message, args) {
+		const { commands } = message.client;
+		const data = [];
+
+		if (!args.length) {
+			data.push('Aqui está uma lista com todos os meus comandos, divididos por categoria:');
+			data.push(commands.map(command => command.name).join(', '));
+			data.push(`\nVocê pode digitar \`${prefix}help <command name>\` para saber mais informacoes sobre um comando!`);
+		}
+		else {
+			if (!commands.has(args[0])) {
+				return message.reply('Esse não é um comando válido!');
+			}
+
+			const command = commands.get(args[0]);
+
+			data.push(`**Nome:** ${command.name}`);
+
+			if (command.description) data.push(`**Descrição:** ${command.description}`);
+			if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
+			if (command.usage) data.push(`**Uso:** ${prefix}${command.name} ${command.usage}`);
+		}
+
+		message.author.send(data, { split: true })
+			.then(() => {
+				if (message.channel.type !== 'dm') {
+					message.channel.send('Eu te enviei uma DM com todos os comandos');
+				}
+			})
+			.catch(() => message.reply('aparentemente eu não posso te mandar DM`s'));
+	},
+};

@@ -39,7 +39,7 @@ module.exports = {
 						upcoming.push(entry);
 				}
 
-				upcoming.sort( (a, b) => { return a.time - b.time; });
+				upcoming.sort((a, b) => { return a.time - b.time; });
 
 				emitter.emit('end');
 			}

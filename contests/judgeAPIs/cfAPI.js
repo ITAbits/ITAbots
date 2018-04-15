@@ -7,7 +7,7 @@ const qs = require('querystring');
 const cf_api = module.exports = {}
 
 /* Calls method name with arguments args (from codeforces API), returns an emitter that calls 'end' returning the parsed JSON when the request ends. The emitter returns 'error' instead if something went wrong */
-cf_api.call_cf_api = function(name, args, retry_times) {
+cf_api.call_cf_api = function (name, args, retry_times) {
 	const emitter = new EventEmitter();
 
 	emitter.on('error', (extra_info) => {
@@ -15,12 +15,12 @@ cf_api.call_cf_api = function(name, args, retry_times) {
 	});
 
 	let try_;
-	try_= function(times) {
+	try_ = function (times) {
 		logger.info('CF request: ' + 'http://codeforces.com/api/' + name + '?' + qs.stringify(args));
 		http.get('http://codeforces.com/api/' + name + '?' + qs.stringify(args), (res) => {
-		if (res.statusCode !== 200) {
+			if (res.statusCode !== 200) {
 				res.resume();
-				if(times > 0) try_(times - 1);
+				if (times > 0) try_(times - 1);
 				else emitter.emit('error', 'Status Code: ' + res.statusCode);
 				return;
 			}
@@ -35,22 +35,22 @@ cf_api.call_cf_api = function(name, args, retry_times) {
 					logger.info(data.substr(0, 1000));
 					obj = JSON.parse(data);
 					if (obj.status == "FAILED") {
-						if(times > 0) try_(times - 1);
+						if (times > 0) try_(times - 1);
 						else emitter.emit('error', 'Comment: ' + obj.comment);
 						return;
 					}
-				} catch(e) {
-					if(times > 0) try_(times - 1);
+				} catch (e) {
+					if (times > 0) try_(times - 1);
 					else emitter.emit('error', '');
 					return;
 				}
 				emitter.emit('end', obj.result);
 			}).on('error', (e) => {
-				if(times > 0) try_(times - 1);
+				if (times > 0) try_(times - 1);
 				else emitter.emit('error', e.message);
 			});
 		}).on('error', (e) => {
-			if(times > 0) try_(times - 1);
+			if (times > 0) try_(times - 1);
 			else emitter.emit('error', e.message);
 		});
 	}
@@ -60,7 +60,7 @@ cf_api.call_cf_api = function(name, args, retry_times) {
 }
 
 /* Calls cf api function 'name' every 30 seconds until condition is satisfied, and then calls callback. Tries at most for 3 days, if it is not satisfied, then it gives up. */
-cf_api.wait_for_condition_on_api_call = function(name, args, condition, callback) {
+cf_api.wait_for_condition_on_api_call = function (name, args, condition, callback) {
 	const emitter = new EventEmitter();
 	let count_calls = 0;
 	let handle = schedule.scheduleJob('/30 * * * * *', () => {
