@@ -1,5 +1,5 @@
 # Local config
-config/default
+config/default.js
 
 # Logs
 logs
