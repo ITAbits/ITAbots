@@ -59,7 +59,7 @@ let processRatings = function (ev, contestId) {
     /* callback */() => {
       let in30s = new Date(Date.now() + 30 * 1000)
       schedule.scheduleJob(in30s, () =>
-        cfAPI.callCfApi('contest.ratingChanges', { contestId: contestId }, 4)
+        cfAPI.call('contest.ratingChanges', { contestId: contestId }, 4)
           .on('end', (obj) => processFinal(obj, ev, contestId)))
     })
 }
@@ -98,7 +98,7 @@ let prelimContestEnd = function (ev, contestId) {
     logger.error("Can't acess elements in DB.")
   })
   logger.info('Total handle count: ' + userHandles.size)
-  cfAPI.callCfApi('contest.standings', { contestId: contestId, showUnofficial: true }, 5)
+  cfAPI.call('contest.standings', { contestId: contestId, showUnofficial: true }, 5)
     .on('end', (obj) => {
       const handlesInContest = new Set()
       obj.rows.forEach((row) => row.party.members.forEach((m) => { if (userHandles.has(m.handle)) handlesInContest.add(m.handle) }))
@@ -129,7 +129,7 @@ module.exports = {
     contestEndHandlers.forEach((h) => { if (h) h.cancel() })
     contestEndHandlers.length = 0
 
-    cfAPI.callCfApi('contest.list', null, 1).on('end', (parsedData) => {
+    cfAPI.call('contest.list', null, 1).on('end', (parsedData) => {
       try {
         upcoming.length = 0
         parsedData.forEach((el) => {
