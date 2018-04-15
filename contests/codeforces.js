@@ -3,9 +3,9 @@
 const logger = require('winston')
 const EventEmitter = require('events')
 const schedule = require('node-schedule')
-const sql = require('sqlite')
-sql.open('./handles.sqlite')
 const cfAPI = require('./judgeAPIs/cfAPI')
+
+const Handles = require('../models/contests-handle')
 
 const bot = require('../bot')
 const contestEndHandlers = []
@@ -26,13 +26,14 @@ let contestMsgAll = function (msg, contestId) {
 }
 
 /* Called when ratings are changed */
-let processFinal = function (ratings, ev, contestId) {
+let processFinal = async function (ratings, ev, contestId) {
   const mp = new Map()
   ratings.forEach((r) => mp.set(r.handle.toLowerCase(), r))
-  sql.all(`select * from handles`).then(rows => {
+  try {
+    const handles = await Handles.find()
     let msg = 'Ratings for ' + ev.name + ' are out!'
     let rs = [] // ratings for handles from user
-    rows.forEach(element => {
+    handles.forEach(element => {
       element.cfHandles.forEach((h) => {
         if (mp.has(h)) { rs.push(mp.get(h)) }
       })
@@ -45,10 +46,10 @@ let processFinal = function (ratings, ev, contestId) {
       msg += '\n\n' + r.handle + '\n' + r.oldRating + ' → ' + r.newRating + ' (' + prefix + (r.newRating - r.oldRating) + ')'
     })
     contestMsgAll(msg, null)
-  }).catch((error) => {
-    logger.error(error)
+  } catch (error) {
     logger.error("Can't acess elements in DB.")
-  })
+    logger.error(error)
+  }
 }
 
 /* Called when system testing ends, checks for rating changes */
@@ -81,7 +82,7 @@ let processContestEnd = function (ev, contestId) {
 }
 
 /* Checks if contest really ended (was not extended) and collects participating handles. */
-let prelimContestEnd = function (ev, contestId) {
+let prelimContestEnd = async function (ev, contestId) {
   inContestIds[contestId] = new Set()
 
   /* Deletes this info after 5 days */
@@ -89,30 +90,33 @@ let prelimContestEnd = function (ev, contestId) {
   schedule.scheduleJob(in5d, () => delete inContestIds[contestId])
 
   const userHandles = new Set()
-  sql.all(`select * from handles`).then(rows => {
-    rows.forEach(element => {
+  try {
+    const handles = await Handles.find()
+    handles.forEach(element => {
       userHandles.add(element.handle)
     })
-  }).catch((error) => {
+  } catch (error) {
     logger.error(error)
     logger.error("Can't acess elements in DB.")
-  })
+  }
+
   logger.info('Total handle count: ' + userHandles.size)
   cfAPI.call('contest.standings', { contestId: contestId, showUnofficial: true }, 5)
-    .on('end', (obj) => {
+    .on('end', async (obj) => {
       const handlesInContest = new Set()
       obj.rows.forEach((row) => row.party.members.forEach((m) => { if (userHandles.has(m.handle)) handlesInContest.add(m.handle) }))
       logger.info('CF contest ' + ev.name + ' has ' + handlesInContest.size + ' participants.')
       if (handlesInContest.size === 0) return
 
-      sql.all(`select * from handles`).then(rows => {
-        rows.forEach(element => {
+      try {
+        const handles = await Handles.find()
+        handles.forEach(element => {
           if (handlesInContest.has(element.handle)) inContestIds[contestId].add(element.id)
         })
-      }).catch((error) => {
+      } catch (error) {
         console.error(error)
         console.log("Can't acess elements in DB.")
-      })
+      }
       logger.info('CF contest ' + ev.name + ' has participants from ' + inContestIds[contestId].size + ' chats.')
 
       cfAPI.waitForConditionOnApiCall('contest.standings', { contestId: contestId, from: 1, count: 1 },

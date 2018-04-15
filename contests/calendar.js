@@ -18,7 +18,7 @@ module.exports = {
 
         upcoming.length = 0
 
-        data.foreach(key => {
+        for (let key in data) {
           if (!data.hasOwnProperty(key)) { return }
           let el = data[key]
 
@@ -37,7 +37,7 @@ module.exports = {
           let ending = new Date(entry.time)
           ending.setSeconds(ending.getSeconds() + entry.duration)
           if (ending.getTime() >= Date.now()) { upcoming.push(entry) }
-        })
+        }
 
         upcoming.sort((a, b) => { return a.time - b.time })
 
