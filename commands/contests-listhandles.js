@@ -5,7 +5,7 @@ module.exports = {
     description: 'Mostra todos os handles do codeforces armazenados',
     category: 'contests',
     aliases: ['handles'],
-    async execute(message, args) {
+    async execute(message) {
         const handles = await Handle.find();
 
         if (!handles) {

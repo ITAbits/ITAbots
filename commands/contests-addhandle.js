@@ -4,8 +4,9 @@ const cfAPI = require('../contests/judgeAPIs/cfAPI');
 module.exports = {
     name: 'addhandle',
     description: 'Adiciona a sua handle do Codeforces aos dados do bot',
-    args: true,
+    category: 'contests',
     usage: '<handle>',
+    args: true,
     execute(message, args) {
         const add_handle = async (element) => {
             try {
@@ -20,15 +21,12 @@ module.exports = {
             }
         }
 
-        args.forEach(element => {
-            cfAPI.call_cf_api('user.info', { handles: element }, 2).on('error', () => {
-                message.reply(`Handle ${element} not found in Codeforces.`);
-            }).on('end', (data) => {
-                // Adds handle with correct case
-                add_handle(element);
-            });
+        const handle = args[0];
+        cfAPI.call_cf_api('user.info', { handles: handle }, 2).on('error', () => {
+            message.reply(`Handle ${element} not found in Codeforces.`);
+        }).on('end', (data) => {
+            // Adds handle with correct case
+            add_handle(element);
         });
-
-
     }
 }

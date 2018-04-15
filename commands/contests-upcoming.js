@@ -22,8 +22,8 @@ const num = function (x, suffix) {
 module.exports = {
     name: 'upcoming',
     description: 'Mostra os contests da proxima semana nos judges mais populares',
-    alias: ['contests'],
     category: 'contests',
+    alias: ['contests'],
     execute(message) {
 
         const user = message.client;

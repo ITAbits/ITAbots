@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const { prefix, token } = require('config');
+const { prefix, token, categories } = require('config');
 
 const Database = require('./database');
 
@@ -16,7 +16,11 @@ const commandFiles = fs.readdirSync('./commands');
 
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
+
+  if (command.category && !categories.includes(command.category)) continue;
+
   client.commands.set(command.name, command);
+  console.log('Command Registered: ', command.name);
 }
 
 client.on('ready', () => {

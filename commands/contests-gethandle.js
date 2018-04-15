@@ -2,7 +2,8 @@ const Handle = require('../models/contests-handle')
 
 module.exports = {
     name: 'gethandle',
-    description: 'TODO',
+    description: 'Fala qual handle do codeforces está registrada para o seu usuário',
+    category: 'contests',
     aliases: ['myhandle', 'handle'],
     async execute(message) {
         try {

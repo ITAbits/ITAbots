@@ -13,9 +13,10 @@
   "keywords": [
     "bot",
     "discord",
-    "codeforces"
+    "codeforces",
+    "contests"
   ],
-  "author": "guima",
+  "author": "ITAbits",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ITAbits/ITAbots/issues"
