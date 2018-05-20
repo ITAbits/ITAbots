@@ -13,7 +13,7 @@ module.exports = {
         message.reply('Algo deu errado!')
       } else {
         var toReply = ''
-        items.forEach(function(item){
+        items.forEach(function (item) {
           toReply.concat(item.name, ' - ', item.author, '\n')
         })
         message.reply(toReply)
